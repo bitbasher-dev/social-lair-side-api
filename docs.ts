@@ -12,9 +12,9 @@ async function initDocumentation(params: { app: FastifyInstance }) {
   await app.register(fastifySwagger, {
     openapi: {
       info: {
-        title: "Learnistic Side API",
-        description: "API that gives external services Learnistic capabilities",
-        version: "v1.1.4",
+        title: "SocialLair Side API",
+        description: "API that gives external services SocialLair capabilities",
+        version: "v1.0.0",
       },
       servers: [],
       components: {
