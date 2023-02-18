@@ -12,6 +12,9 @@ import fastify, {
 import { docs } from "./docs";
 
 import { IncomingMessage, ServerResponse } from "http";
+import { initUserRoutes } from "./routes/user.routes";
+import { initMongoDB } from "./services/Mongo";
+import { initLairRoutes } from "./routes/lair.routes";
 
 export type FastifyApp = FastifyInstance<
   RawServerDefault,
@@ -22,13 +25,25 @@ export type FastifyApp = FastifyInstance<
 >;
 
 async function run() {
-  console.log(`Queue instantiated`);
+  console.log(`Starting server...`);
 
   const appWithoutDocs = fastify();
   appWithoutDocs.setValidatorCompiler(validatorCompiler);
   appWithoutDocs.setSerializerCompiler(serializerCompiler);
 
+  const mongo = await initMongoDB();
+
   const app = await docs.initDocumentation({ app: appWithoutDocs });
+
+  initUserRoutes({
+    app,
+    mongo,
+  });
+
+  initLairRoutes({
+    app,
+    mongo,
+  });
 
   await appWithoutDocs.ready();
   appWithoutDocs.swagger();

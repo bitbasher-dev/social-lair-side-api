@@ -31,7 +31,7 @@ async function initDocumentation(params: { app: FastifyInstance }) {
   });
 
   await app.register(fastifySwaggerUi, {
-    routePrefix: "/documentation",
+    routePrefix: "/docs",
   });
 
   // Return the app with the type provider properly injected, so it can parse Zod
