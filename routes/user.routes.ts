@@ -2,7 +2,6 @@ import { CONFIG } from "../config";
 import { MongoCollections } from "../services/Mongo";
 import { FastifyApp } from "../social-lair-side-api";
 import {
-  GET_USER_LAIRS_RESPONSE_SCHEMA,
   LAIRS_SCHEMA,
   POST_USER_LOGIN_BODY_SCHEMA,
   POST_USER_LOGIN_RESPONSE_SCHEMA,
@@ -147,9 +146,9 @@ export function initUserRoutes(params: {
     "/user/lairs",
     {
       schema: {
-        response: {
-          200: GET_USER_LAIRS_RESPONSE_SCHEMA,
-        },
+        // response: {
+        //   200: GET_USER_LAIRS_RESPONSE_SCHEMA,
+        // },
         security: [{ authorization: [] }],
 
         tags: ["User"],

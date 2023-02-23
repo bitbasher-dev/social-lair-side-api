@@ -45,6 +45,6 @@ export const LAIRS_SCHEMA = z.object({
   activityCount: z.number(),
 });
 
-export const GET_USER_LAIRS_RESPONSE_SCHEMA = z.object({
-  lairs: LAIRS_SCHEMA.array(),
-});
+// export const GET_USER_LAIRS_RESPONSE_SCHEMA = z.object({
+//   lairs: LAIRS_SCHEMA.array(),
+// });
