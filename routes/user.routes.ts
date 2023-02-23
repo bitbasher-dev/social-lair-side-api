@@ -172,7 +172,11 @@ export function initUserRoutes(params: {
         .toArray();
 
       // Small mapping to convert _id
-      const lairs = _lairs.map((l) => ({ ...l, _id: l._id.toString() }));
+      const lairs = _lairs.map((l) => ({
+        ...l,
+        _id: l._id.toString(),
+        id: l._id.toString(),
+      }));
 
       return {
         lairs,
