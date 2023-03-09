@@ -14,7 +14,7 @@ async function initDocumentation(params: { app: FastifyInstance }) {
       info: {
         title: "SocialLair Side API",
         description: "API that gives external services SocialLair capabilities",
-        version: "v1.0.0",
+        version: "v1.0.1",
       },
       servers: [],
       components: {

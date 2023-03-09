@@ -13,8 +13,9 @@ import { docs } from "./docs";
 
 import { IncomingMessage, ServerResponse } from "http";
 import { initUserRoutes } from "./routes/user.routes";
-import { initMongoDB } from "./services/Mongo";
+import { initMongoDB, MongoCollections } from "./services/Mongo";
 import { initLairRoutes } from "./routes/lair.routes";
+import { IACLService, initACL } from "./services/ACL";
 
 export type FastifyApp = FastifyInstance<
   RawServerDefault,
@@ -24,6 +25,11 @@ export type FastifyApp = FastifyInstance<
   ZodTypeProvider
 >;
 
+export type IServices = {
+  mongo: MongoCollections;
+  ACL: IACLService;
+};
+
 async function run() {
   console.log(`Starting server...`);
 
@@ -32,17 +38,23 @@ async function run() {
   appWithoutDocs.setSerializerCompiler(serializerCompiler);
 
   const mongo = await initMongoDB();
+  const ACL = initACL({ mongo });
 
   const app = await docs.initDocumentation({ app: appWithoutDocs });
 
+  const services = {
+    mongo,
+    ACL,
+  };
+
   initUserRoutes({
     app,
-    mongo,
+    services,
   });
 
   initLairRoutes({
     app,
-    mongo,
+    services,
   });
 
   await appWithoutDocs.ready();

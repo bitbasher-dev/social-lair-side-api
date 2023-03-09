@@ -1,6 +1,6 @@
 import { CONFIG } from "../config";
 import { MongoCollections } from "../services/Mongo";
-import { FastifyApp } from "../social-lair-side-api";
+import { FastifyApp, IServices } from "../social-lair-side-api";
 import {
   LAIRS_SCHEMA,
   POST_USER_LOGIN_BODY_SCHEMA,
@@ -64,9 +64,10 @@ export enum InvitePrivacyOption {
 
 export function initUserRoutes(params: {
   app: FastifyApp;
-  mongo: MongoCollections;
+  services: IServices;
 }) {
-  const { app, mongo } = params;
+  const { app, services } = params;
+  const { ACL, mongo } = services;
 
   app.post(
     "/user/login",
