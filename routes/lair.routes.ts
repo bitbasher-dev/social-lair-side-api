@@ -1,11 +1,6 @@
 import { ObjectId, WithId } from "mongodb";
-import {
-  Label,
-  MongoCollections,
-  PostStatus,
-  TiptapPost,
-  UserInfo,
-} from "../services/Mongo";
+import fetch from "node-fetch";
+import { Label, PostStatus, TiptapPost, UserInfo } from "../services/Mongo";
 import { FastifyApp, IServices } from "../social-lair-side-api";
 import {
   GET_LAIR_LABELS_PARAMS_SCHEMA,
@@ -13,8 +8,9 @@ import {
   POST_LAIR_CREATE_POST_BODY_SCHEMA,
   POST_LAIR_CREATE_POST_RESPONSE_SCHEMA,
   POST_LAIR_INVITE_BODY_SCHEMA,
+  POST_LAIR_REMOVE_USER_BODY_SCHEMA,
+  POST_LAIR_REMOVE_USER_RESPONSE_SCHEMA,
 } from "./lair.zod";
-import fetch from "node-fetch";
 
 export function initLairRoutes(params: {
   app: FastifyApp;
@@ -241,6 +237,46 @@ export function initLairRoutes(params: {
       });
 
       return respose.json();
+    }
+  );
+
+  app.post(
+    "/lair/remove_user",
+    {
+      schema: {
+        body: POST_LAIR_REMOVE_USER_BODY_SCHEMA,
+        response:{
+          200: POST_LAIR_REMOVE_USER_RESPONSE_SCHEMA
+        },
+        security: [{ authorization: [] }],
+        tags: ["Lair"],
+      },
+    },
+    async (req) => {
+      const token = req.headers.authorization?.split("Bearer ")[1];
+      const { user } = await ACL.getUserFromToken({ token });
+
+      const { lairId, email } = req.body;
+
+      const isOwnerOrAdmin = await ACL.isUserOwnerOrAdminFromLair({
+        lairId,
+        userUid: user.uid,
+      });
+
+      if (!isOwnerOrAdmin) throw new Error(`Unauthorized`);
+
+      const userToBeingRemoved = await mongo.users.findOne({
+        email: { $in: [email] },
+      });
+
+      if (!userToBeingRemoved) throw new Error(`User not found`);
+
+      const deleteResult = await mongo.lairsUsers.deleteOne({
+        lairId,
+        userUid: userToBeingRemoved.uid,
+      });
+
+      return { success: !!deleteResult.deletedCount };
     }
   );
 }

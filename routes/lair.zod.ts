@@ -23,6 +23,15 @@ export const POST_LAIR_CREATE_POST_RESPONSE_SCHEMA = z.object({
   postURL: z.string().describe("The URL of the created post"),
 });
 
+export const POST_LAIR_REMOVE_USER_BODY_SCHEMA = z.object({
+  email: z.string().describe("A email from the user to be removed"),
+  lairId: z.string().describe("The lair id"),
+});
+
+export const POST_LAIR_REMOVE_USER_RESPONSE_SCHEMA = z.object({
+  success: z.boolean().describe("If the operation was successful"),
+});
+
 export const POST_LAIR_INVITE_BODY_SCHEMA = z.object({
   lairId: z.string().describe("The lair id"),
   email: z.string().describe("The email to be invited to the lair"),
