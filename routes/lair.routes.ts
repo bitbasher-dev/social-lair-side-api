@@ -245,8 +245,8 @@ export function initLairRoutes(params: {
     {
       schema: {
         body: POST_LAIR_REMOVE_USER_BODY_SCHEMA,
-        response:{
-          200: POST_LAIR_REMOVE_USER_RESPONSE_SCHEMA
+        response: {
+          200: POST_LAIR_REMOVE_USER_RESPONSE_SCHEMA,
         },
         security: [{ authorization: [] }],
         tags: ["Lair"],
@@ -269,7 +269,11 @@ export function initLairRoutes(params: {
         email: { $in: [email] },
       });
 
-      if (!userToBeingRemoved) throw new Error(`User not found`);
+      if (!userToBeingRemoved)
+        return {
+          success: false,
+          message: `Email not found`,
+        };
 
       const deleteResult = await mongo.lairsUsers.deleteOne({
         lairId,
